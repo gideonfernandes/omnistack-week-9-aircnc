@@ -23,8 +23,8 @@ const Login = ({ navigation }) => {
     AsyncStorage.getItem('user_id').then(user_id => {
       if (user_id) {
         navigation.navigate('List');
-      }
-    })
+      };
+    });
   }, []);
 
   const handleSubmit = async () => {
