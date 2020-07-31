@@ -10,11 +10,19 @@ const app = express();
 const server = http.Server(app);
 const io = socketio(server);
 
+dbConnection();
+
+const connectedUsers = {};
 io.on('connection', socket => {
-  console.log('Usuário conectado.', socket.id);
+  const { user_id } = socket.handshake.query;
+  connectedUsers[user_id] = socket.id;
 });
 
-dbConnection();
+app.use((request, response, next) => {
+  request.io = io;
+  request.connectedUsers = connectedUsers;
+  return next();
+});
 
 app.use(cors());
 app.use(express.json());
