@@ -34,14 +34,24 @@ const Dashboard = () => {
     });
   }, [requests, socket]);
 
+  const handleAccept = async booking_id => {
+    await api.post(`/bookings/${booking_id}/approvals`);
+    setRequests(requests.filter(request => request._id !== booking_id));
+  };
+
+  const handleReject = async booking_id => {
+    await api.post(`/bookings/${booking_id}/rejections`);
+    setRequests(requests.filter(request => request._id !== booking_id));
+  };
+
   return (
     <Fragment>
       <ul className="notifications">
         {requests.map(request => (
           <li key={request._id}>
             <p><strong>{request.user.email}</strong> está solicitando uma reserva em <strong>{request.spot.company}</strong> para a data: <strong>{request.date}</strong></p>
-            <button className="accept">ACEITAR</button>
-            <button className="reject">REJEITAR</button>
+            <button className="accept" onClick={() => handleAccept(request._id)}>ACEITAR</button>
+            <button className="reject" onClick={() => handleReject(request._id)}>REJEITAR</button>
           </li>
         ))}
       </ul>
